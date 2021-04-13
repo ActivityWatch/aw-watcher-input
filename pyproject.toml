@@ -15,9 +15,10 @@ aw-watcher-input = "aw_watcher_input.main:main"
 python = "^3.7"
 aw-client = {git = "https://github.com/ActivityWatch/aw-client.git"}
 aw-watcher-afk = {git = "https://github.com/ActivityWatch/aw-watcher-afk.git"}
+pyuserinput = {git = "https://github.com/PyUserInput/PyUserInput.git", rev = "ac2d4c7a7f4b1a72e70b1a2ef8925d5312fb12bc"}
 
 [tool.poetry.dev-dependencies]
-mypy = "^0.790"
+mypy = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
