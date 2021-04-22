@@ -1,0 +1,55 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: Test on ${{ matrix.os }} (py-${{ matrix.python_version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-18.04]  # Uncommented until pynput migration done: windows-latest, macOS-latest
+        python_version: [3.7, 3.9]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        submodules: 'recursive'
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python_version }}
+    - name: Create virtualenv
+      shell: bash
+      run: |
+        python -m venv venv
+    - name: Install dependencies
+      shell: bash
+      run: |
+        pip install poetry
+        source venv/bin/activate || source venv/Scripts/activate
+        poetry install
+    - name: Run tests
+      shell: bash
+      run: |
+        source venv/bin/activate || source venv/Scripts/activate
+        make test
+    - name: Package
+      shell: bash
+      run: |
+        source venv/bin/activate || source venv/Scripts/activate
+        pip install pyinstaller==4.3
+        make package
+    - name: Test package
+      shell: bash
+      run: |
+          dist/aw-watcher-input/aw-watcher-input --help
+    - name: Upload package
+      uses: actions/upload-artifact@v2
+      with:
+        name: aw-watcher-afk-${{ runner.os }}-py${{ matrix.python_version }}
+        path: dist/aw-watcher-afk
