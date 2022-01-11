@@ -17,6 +17,7 @@ def main(testing: bool):
     logging.basicConfig(level=logging.INFO)
     logger.info("Starting watcher...")
     client = aw_client.ActivityWatchClient("aw-watcher-input", testing=testing)
+    client.connect()
 
     # Create bucjet
     bucket_name = "{}_{}".format(client.client_name, client.client_hostname)
