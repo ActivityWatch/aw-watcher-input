@@ -20,9 +20,31 @@ Run `poetry run aw-watcher-input --help` for usage instructions.
 We might eventually create binary builds (like the ones bundled with ActivityWatch for aw-watcher-afk and aw-watcher-window) to make it easier to get this watcher up and running, but it's still a bit too early for that.
 
 
+## Custom visualization
+
+This watcher ships with an **experimental** custom visualization which needs special configuration. 
+
+**NOTE:** This is a work-in-progress. Custom visualizations is an experimental feature with little to no decent documentation, so far.
+
+First, you need to build it, which you can do by:
+
+```sh
+cd visualization/
+npm install -g pug browserify  # might need sudo
+npm install
+make build
+```
+
+You can then configure aw-server (aw-server-rust not yet supported) to host the custom visualization by adding the following to your aw-server config file:
+
+```toml
+[server.custom_static]
+aw-watcher-input = "/home/user/path/to/aw-watcher-input/visualization/dist"
+```
+
 # Notes
 
-This was massively inspired by ulogm by @karpathy, here's a screenshot for how it looks:
+This was massively inspired by ulogme by @karpathy, here's a screenshot of how it looks:
 
 ![screenshot of ulogme](https://karpathy.github.io/assets/ulogme_sv2.jpeg)
 

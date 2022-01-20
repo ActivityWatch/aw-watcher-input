@@ -22,7 +22,7 @@ def main(testing: bool):
     # Create bucjet
     bucket_name = "{}_{}".format(client.client_name, client.client_hostname)
     eventtype = "os.hid.input"
-    client.create_bucket(bucket_name, eventtype, queued=True)
+    client.create_bucket(bucket_name, eventtype, queued=False)
     poll_time = 1
 
     keyboard = KeyboardListener()
