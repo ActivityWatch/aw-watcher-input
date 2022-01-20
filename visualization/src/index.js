@@ -17,7 +17,7 @@ let today_end = new Date();
 today_end.setHours(23, 59, 59, 999);
 
 const start = url.searchParams.get("start") || today_start;
-const stop = url.searchParams.get("stop") || today_end;
+const end = url.searchParams.get("end") || today_end;
 const hostname = url.searchParams.get("hostname");
 console.log(hostname, start, stop);
 
@@ -36,7 +36,7 @@ function load() {
       }
     })
     .then(() => {
-      return aw.getEvents(bucketName, { start: start, stop: stop });
+      return aw.getEvents(bucketName, { start: start, end: end });
     })
     .then(events => {
       console.log(events);
