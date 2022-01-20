@@ -1,0 +1,22 @@
+{
+  "name": "aw-watcher-input-vis",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ActivityWatch/aw-watcher-input.git"
+  },
+  "author": "",
+  "license": "MPL-2.0",
+  "bugs": {
+    "url": "https://github.com/ActivityWatch/aw-watcher-input/issues"
+  },
+  "homepage": "https://github.com/ActivityWatch/aw-watcher-input#readme",
+  "dependencies": {
+    "aw-client": "^0.3.0"
+  }
+}
