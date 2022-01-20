@@ -21,7 +21,7 @@ const end = url.searchParams.get("end") || today_end;
 const hostname = url.searchParams.get("hostname");
 console.log(hostname, start, stop);
 
-const aw = new aw_client.AWClient("aw-watcher-input", { testing: true });
+const aw = new aw_client.AWClient("aw-watcher-input", { testing: testing });
 
 function load() {
   const statusEl = document.getElementById("status");
