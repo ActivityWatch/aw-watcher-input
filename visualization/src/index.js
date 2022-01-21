@@ -19,7 +19,7 @@ today_end.setHours(23, 59, 59, 999);
 const start = url.searchParams.get("start") || today_start;
 const end = url.searchParams.get("end") || today_end;
 const hostname = url.searchParams.get("hostname");
-console.log(hostname, start, stop);
+console.log(hostname, start, end);
 
 const aw = new aw_client.AWClient("aw-watcher-input", { testing: testing });
 
