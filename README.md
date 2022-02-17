@@ -30,7 +30,7 @@ First, you need to build it, which you can do by:
 
 ```sh
 cd visualization/
-npm install -g pug browserify  # might need sudo
+npm install -g pug pug-cli browserify  # might need sudo
 npm install
 make build
 ```
