@@ -35,14 +35,23 @@ npm install
 make build
 ```
 
-You can then configure aw-server (aw-server-rust not yet supported) to host the custom visualization by adding the following to your aw-server config file (with the correct path!):
+You can then configure aw-server or aw-server-rust to host the custom visualization.
+
+To do so for aw-server, add the following to your config file (with the correct path!):
 
 ```toml
 [server.custom_static]
 aw-watcher-input = "/home/user/path/to/aw-watcher-input/visualization/dist"
 ```
 
-You then need to restart aw-server for the changes to take effect.
+For aw-server-rust, instead add the following to your config file (with the correct path!):
+
+```toml
+[custom_static]
+aw-watcher-input = "/home/user/path/to/aw-watcher-input/visualization/dist"
+```
+
+You then need to restart aw-server/aw-server-rust for the changes to take effect.
 
 Once the server is restarted, you can open the Activity view in the web UI, click "Edit view", then "Add visualization", then click the cogwheel and select "Custom visualization". This will open a popup asking for which visualization, here enter "aw-watcher-input".
 
