@@ -13,8 +13,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04]  # Uncommented until pynput migration done: windows-latest, macOS-latest
-        python_version: [3.7, 3.9]
+        os: ["ubuntu-22.04", "windows-latest", "macOS-latest"]
+        python_version: [3.9]
+        node_version: [16]
     steps:
     - uses: actions/checkout@v2
       with:
@@ -23,6 +24,10 @@ jobs:
       uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python_version }}
+    - name: Setup Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node_version }}
     - name: Create virtualenv
       shell: bash
       run: |
@@ -33,6 +38,11 @@ jobs:
         pip install poetry
         source venv/bin/activate || source venv/Scripts/activate
         poetry install
+    - name: Build visualization
+      shell: bash
+      run: |
+        npm install -g pug-cli browserify
+        cd visualization/ && make build
     - name: Run tests
       shell: bash
       run: |
@@ -51,5 +61,5 @@ jobs:
     - name: Upload package
       uses: actions/upload-artifact@v2
       with:
-        name: aw-watcher-afk-${{ runner.os }}-py${{ matrix.python_version }}
-        path: dist/aw-watcher-afk
+        name: aw-watcher-input-${{ runner.os }}-py${{ matrix.python_version }}
+        path: dist/aw-watcher-input

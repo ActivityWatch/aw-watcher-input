@@ -1,3 +1,4 @@
+.PHONY: build clean
 
 build: dist/index.html dist/bundle.js
 
