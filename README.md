@@ -30,17 +30,23 @@ First, you need to build it, which you can do by:
 
 ```sh
 cd visualization/
-npm install -g pug pug-cli browserify  # might need sudo
+npm install -g pug-cli browserify  # might need sudo
 npm install
 make build
 ```
 
-You can then configure aw-server (aw-server-rust not yet supported) to host the custom visualization by adding the following to your aw-server config file:
+You can then configure aw-server (aw-server-rust not yet supported) to host the custom visualization by adding the following to your aw-server config file (with the correct path!):
 
 ```toml
 [server.custom_static]
 aw-watcher-input = "/home/user/path/to/aw-watcher-input/visualization/dist"
 ```
+
+You then need to restart aw-server for the changes to take effect.
+
+Once the server is restarted, you can open the Activity view in the web UI, click "Edit view", then "Add visualization", then click the cogwheel and select "Custom visualization". This will open a popup asking for which visualization, here enter "aw-watcher-input".
+
+It should now work. Click save and you're done!
 
 # Notes
 

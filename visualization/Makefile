@@ -1,6 +1,9 @@
 
 build: dist/index.html dist/bundle.js
 
+clean:
+	rm -r dist
+
 dist/bundle.js: src/index.js
 	browserify $< -o $@
 
