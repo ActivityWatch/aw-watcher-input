@@ -7,8 +7,8 @@ function add(accumulator, a) {
   return accumulator + a;
 }
 
-// TODO: Avoid hardcoding and pass port directly to AWClient constructor
-const testing = url.port == 5666;
+// TODO: Avoid testing-port assumption
+const testing = url.port != 5600;
 
 let today_start = new Date();
 today_start.setHours(0, 0, 0, 0);
@@ -19,9 +19,12 @@ today_end.setHours(23, 59, 59, 999);
 const start = url.searchParams.get("start") || today_start;
 const end = url.searchParams.get("end") || today_end;
 const hostname = url.searchParams.get("hostname");
-console.log(hostname, start, end);
+//console.log(hostname, start, end);
 
-const aw = new aw_client.AWClient("aw-watcher-input", { testing: testing });
+const aw = new aw_client.AWClient("aw-watcher-input", {
+  testing: testing,
+  baseURL: url.origin,
+});
 
 function load() {
   const statusEl = document.getElementById("status");
@@ -30,7 +33,7 @@ function load() {
   const bucketName = `aw-watcher-input_${hostname}`;
 
   aw.getBuckets()
-    .then(bs => {
+    .then((bs) => {
       if (bs[bucketName] === undefined) {
         throw `no bucket called ${bucketName}`;
       }
@@ -38,14 +41,14 @@ function load() {
     .then(() => {
       return aw.getEvents(bucketName, { start: start, end: end });
     })
-    .then(events => {
-      console.log(events);
-      const presses = events.map(e => e.data.presses).reduce(add, 0);
-      const clicks = events.map(e => e.data.clicks).reduce(add, 0);
+    .then((events) => {
+      console.debug(events);
+      const presses = events.map((e) => e.data.presses).reduce(add, 0);
+      const clicks = events.map((e) => e.data.clicks).reduce(add, 0);
       pressesEl.append(presses);
       clicksEl.append(clicks);
     })
-    .catch(msg => statusEl.append(msg));
+    .catch((msg) => statusEl.append(msg));
 }
 
 load();
