@@ -52,7 +52,6 @@ jobs:
       shell: bash
       run: |
         source venv/bin/activate || source venv/Scripts/activate
-        pip install pyinstaller==4.3
         make package
     - name: Test package
       shell: bash
