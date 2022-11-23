@@ -42,7 +42,7 @@ jobs:
       shell: bash
       run: |
         npm install -g pug-cli browserify
-        cd visualization/ && make build
+        cd visualization/ && npm install && make build
     - name: Run tests
       shell: bash
       run: |
