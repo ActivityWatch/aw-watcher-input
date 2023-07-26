@@ -12,9 +12,9 @@ packages = [
 aw-watcher-input = "aw_watcher_input.main:main"
 
 [tool.poetry.dependencies]
-python = "^3.8,<3.11"
+python = "^3.8,<3.13"
 aw-client = "^0.5"
-aw-watcher-afk = {git = "https://github.com/ActivityWatch/aw-watcher-afk.git"}
+aw-watcher-afk = { git = "https://github.com/TSRBerry/aw-watcher-afk.git", branch="python311" }
 
 [tool.poetry.dev-dependencies]
 mypy = "*"
