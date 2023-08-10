@@ -4,9 +4,7 @@ version = "0.1.0"
 description = ""
 authors = ["Erik Bjäreholt <erik@bjareho.lt>"]
 license = "MPL-2.0"
-packages = [
-    { include = "aw_watcher_input", from = "src" }
-]
+packages = [{ include = "aw_watcher_input", from = "src" }]
 
 [tool.poetry.scripts]
 aw-watcher-input = "aw_watcher_input.main:main"
@@ -14,7 +12,7 @@ aw-watcher-input = "aw_watcher_input.main:main"
 [tool.poetry.dependencies]
 python = "^3.8,<3.13"
 aw-client = "^0.5"
-aw-watcher-afk = { git = "https://github.com/TSRBerry/aw-watcher-afk.git", branch="python311" }
+aw-watcher-afk = { git = "https://github.com/ActivityWatch/aw-watcher-afk.git" }
 
 [tool.poetry.dev-dependencies]
 mypy = "*"
