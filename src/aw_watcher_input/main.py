@@ -1,10 +1,9 @@
-from time import sleep
-from datetime import datetime, timezone
 import logging
-
-import click
+from datetime import datetime, timezone
+from time import sleep
 
 import aw_client
+import click
 from aw_core import Event
 from aw_watcher_afk.listeners import KeyboardListener, MouseListener
 
@@ -23,7 +22,7 @@ def main(testing: bool):
     bucket_name = "{}_{}".format(client.client_name, client.client_hostname)
     eventtype = "os.hid.input"
     client.create_bucket(bucket_name, eventtype, queued=False)
-    poll_time = 1
+    poll_time = 5
 
     keyboard = KeyboardListener()
     keyboard.start()
@@ -34,7 +33,13 @@ def main(testing: bool):
 
     while True:
         last_run = now
-        sleep(poll_time)
+
+        # we want to ensure that the polling happens with a predictable cadence
+        time_to_sleep = poll_time - datetime.now().timestamp() % poll_time
+        # ensure that the sleep time is between 0 and poll_time (if system time is changed, this might be negative)
+        time_to_sleep = max(min(time_to_sleep, poll_time), 0)
+        sleep(time_to_sleep)
+
         now = datetime.now(tz=timezone.utc)
 
         # If input:    Send a heartbeat with data, ensure the span is correctly set, and don't use pulsetime.
