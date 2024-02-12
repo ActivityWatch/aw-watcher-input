@@ -12,8 +12,12 @@ logger = logging.getLogger(__name__)
 
 @click.command()
 @click.option("--testing", is_flag=True)
-def main(testing: bool):
-    logging.basicConfig(level=logging.INFO)
+@click.option("--debug", is_flag=True)
+def main(testing: bool, debug:bool):
+    if debug:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
     logger.info("Starting watcher...")
     client = aw_client.ActivityWatchClient("aw-watcher-input", testing=testing)
     client.connect()
@@ -54,8 +58,8 @@ def main(testing: bool):
         pulsetime = 0.0
         if all(map(lambda v: v == 0, merged_data.values())):
             pulsetime = poll_time + 0.1
-            logger.info("No new input")
+            logger.debug("No new input")
         else:
-            logger.info(f"New input: {e}")
+            logger.debug(f"New input: {e}")
 
         client.heartbeat(bucket_name, e, pulsetime=pulsetime, queued=True)
