@@ -3,12 +3,15 @@ from datetime import datetime, timezone
 from time import sleep
 
 import aw_client
+import click
 from aw_core import Event
 from aw_watcher_afk.listeners import KeyboardListener, MouseListener
 
 logger = logging.getLogger(__name__)
 
-def main(args, testing: bool):
+@click.command()
+@click.option("--testing", is_flag=True) testing: bool
+def main(testing: bool):
     logging.basicConfig(level=logging.INFO)
     logger.info("aw_watcher_input started"  + (" in testing mode" if testing else ""))
     client = aw_client.ActivityWatchClient("aw-watcher-input", testing=testing)
@@ -30,9 +33,9 @@ def main(args, testing: bool):
         last_run = now
 
         # we want to ensure that the polling happens with a predictable cadence
-        time_to_sleep = args.poll_time - datetime.now().timestamp() % args.poll_time
+time_to_sleep = poll_time - datetime.now().timestamp() % poll_time
         # ensure that the sleep time is between 0 and poll_time (if system time is changed, this might be negative)
-        time_to_sleep = max(min(time_to_sleep, args.poll_time), 0)
+time_to_sleep = max(min(time_to_sleep, poll_time), 0)
         sleep(time_to_sleep)
 
         now = datetime.now(tz=timezone.utc)
@@ -48,7 +51,7 @@ def main(args, testing: bool):
 
         pulsetime = 0.0
         if all(map(lambda v: v == 0, merged_data.values())):
-            pulsetime = args.poll_time + 0.1
+pulsetime = poll_time + 0.1
             logger.info("No new input")
         else:
             logger.info(f"New input: {e}")
