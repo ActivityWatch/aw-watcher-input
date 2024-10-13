@@ -58,7 +58,7 @@ jobs:
       run: |
           dist/aw-watcher-input/aw-watcher-input --help
     - name: Upload package
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: aw-watcher-input-${{ runner.os }}-py${{ matrix.python_version }}
         path: dist/aw-watcher-input
