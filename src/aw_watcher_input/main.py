@@ -16,9 +16,10 @@ def main(testing: bool):
     logging.basicConfig(level=logging.INFO)
     logger.info("Starting watcher...")
     client = aw_client.ActivityWatchClient("aw-watcher-input", testing=testing)
+    client.wait_for_start()
     client.connect()
 
-    # Create bucjet
+    # Create bucket
     bucket_name = "{}_{}".format(client.client_name, client.client_hostname)
     eventtype = "os.hid.input"
     client.create_bucket(bucket_name, eventtype, queued=False)
