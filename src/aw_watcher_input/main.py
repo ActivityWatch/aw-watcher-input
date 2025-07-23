@@ -12,10 +12,11 @@ logger = logging.getLogger(__name__)
 
 @click.command()
 @click.option("--testing", is_flag=True)
-def main(testing: bool):
+@click.option("--port", default=5600, type=int, help="Port to connect to aw-server")
+def main(testing: bool, port: int):
     logging.basicConfig(level=logging.INFO)
     logger.info("Starting watcher...")
-    client = aw_client.ActivityWatchClient("aw-watcher-input", testing=testing)
+    client = aw_client.ActivityWatchClient("aw-watcher-input", testing=testing, port=port)
     client.wait_for_start()
     client.connect()
 
