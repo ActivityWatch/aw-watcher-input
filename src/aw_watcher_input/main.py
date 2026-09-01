@@ -1,6 +1,7 @@
 import logging
 from datetime import datetime, timezone
 from time import sleep
+from typing import Optional
 
 import aw_client
 import click
@@ -11,11 +12,17 @@ logger = logging.getLogger(__name__)
 
 
 @click.command()
+@click.option("--host", default=None, help="Hostname of the aw-server to connect to.")
+@click.option(
+    "--port", default=None, type=int, help="Port of the aw-server to connect to."
+)
 @click.option("--testing", is_flag=True)
-def main(testing: bool):
+def main(testing: bool, host: Optional[str], port: Optional[int]):
     logging.basicConfig(level=logging.INFO)
     logger.info("Starting watcher...")
-    client = aw_client.ActivityWatchClient("aw-watcher-input", testing=testing)
+    client = aw_client.ActivityWatchClient(
+        "aw-watcher-input", testing=testing, host=host, port=port
+    )
     client.wait_for_start()
     client.connect()
 
