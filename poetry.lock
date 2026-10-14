@@ -633,12 +633,13 @@ setuptools = ">=42.0.0"
 
 [[package]]
 name = "pynput"
-version = "1.7.7"
+version = "1.8.2"
 description = "Monitor and control user input devices"
 optional = false
 python-versions = "*"
 files = [
-    {file = "pynput-1.7.7-py2.py3-none-any.whl", hash = "sha256:afc43f651684c98818de048abc76adf9f2d3d797083cb07c1f82be764a2d44cb"},
+    {file = "pynput-1.8.2-py2.py3-none-any.whl", hash = "sha256:8cc38cf13a6ab2749cb375678be8a0fd705d7ce49c8001ff5db4007a723bbef1"},
+    {file = "pynput-1.8.2.tar.gz", hash = "sha256:f493c87157cd3861b4468f7f896857051762f44ed26f1b641e7cc5840a457087"},
 ]
 
 [package.dependencies]
