@@ -23,13 +23,13 @@ def main(testing: bool, host: Optional[str], port: Optional[int]):
     client = aw_client.ActivityWatchClient(
         "aw-watcher-input", testing=testing, host=host, port=port
     )
-    client.wait_for_start()
-    client.connect()
 
-    # Create bucket
+    # Register before connecting: the queue creates the bucket and retries
+    # delivery even if the server is still starting (e.g. during a slow boot).
     bucket_name = "{}_{}".format(client.client_name, client.client_hostname)
     eventtype = "os.hid.input"
-    client.create_bucket(bucket_name, eventtype, queued=False)
+    client.create_bucket(bucket_name, eventtype, queued=True)
+    client.connect()
     poll_time = 5
 
     keyboard = KeyboardListener()
