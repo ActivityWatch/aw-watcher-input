@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "make build",
+    "test": "node --test test/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,11 @@
   },
   "homepage": "https://github.com/ActivityWatch/aw-watcher-input#readme",
   "dependencies": {
-    "aw-client": "^0.3.0"
+    "aw-client": "^0.3.0",
+    "chart.js": "^4.5.1"
+  },
+  "devDependencies": {
+    "browserify": "^17.0.1",
+    "pug": "^3.0.4"
   }
 }
