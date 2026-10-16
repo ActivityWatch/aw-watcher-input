@@ -1,14 +1,39 @@
 import logging
+import os
 from datetime import datetime, timezone
 from time import sleep
-from typing import Optional
+from typing import Optional, Tuple
 
 import aw_client
 import click
 from aw_core import Event
-from aw_watcher_afk.listeners import KeyboardListener, MouseListener
+from aw_watcher_afk.listeners import EventFactory, KeyboardListener, MouseListener
 
 logger = logging.getLogger(__name__)
+
+
+def _create_listeners() -> Tuple[EventFactory, EventFactory]:
+    """Return (keyboard, mouse) listeners appropriate for the current session.
+
+    On Wayland (WAYLAND_DISPLAY is set) the pynput-based listeners cannot
+    capture global input events, so evdev-based alternatives are used instead.
+    They require read access to /dev/input/event* — typically via the 'input'
+    group (``sudo usermod -aG input $USER``).
+    """
+    if os.environ.get("WAYLAND_DISPLAY"):
+        try:
+            from aw_watcher_input.listeners_wayland import (
+                EvdevKeyboardListener,
+                EvdevMouseListener,
+            )
+
+            logger.info("Wayland display detected — using evdev-based listeners")
+            return EvdevKeyboardListener(), EvdevMouseListener()
+        except Exception as exc:
+            logger.warning(
+                "Failed to load evdev listeners (%s); falling back to pynput", exc
+            )
+    return KeyboardListener(), MouseListener()
 
 
 @click.command()
@@ -32,9 +57,8 @@ def main(testing: bool, host: Optional[str], port: Optional[int]):
     client.create_bucket(bucket_name, eventtype, queued=False)
     poll_time = 5
 
-    keyboard = KeyboardListener()
+    keyboard, mouse = _create_listeners()
     keyboard.start()
-    mouse = MouseListener()
     mouse.start()
 
     now = datetime.now(tz=timezone.utc)
