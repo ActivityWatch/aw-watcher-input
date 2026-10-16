@@ -63,6 +63,7 @@ class EvdevKeyboardListener(EventFactory):
         self._threads: List[threading.Thread] = []
         self._devices: list = []
         self._stop_event = threading.Event()
+        self._lock = threading.Lock()
 
     def _reset_data(self) -> None:
         self.event_data = {"presses": 0}
@@ -123,6 +124,13 @@ class EvdevKeyboardListener(EventFactory):
     def is_alive(self) -> bool:
         return any(t.is_alive() for t in self._threads)
 
+    def next_event(self) -> dict:
+        with self._lock:
+            self.new_event.clear()
+            data = dict(self.event_data)
+            self._reset_data()
+        return data
+
     def _read_events(self, device) -> None:
         import evdev
 
@@ -132,7 +140,8 @@ class EvdevKeyboardListener(EventFactory):
                     break
                 # Only count key-press events (value == 1); ignore repeats (value == 2)
                 if event.type == evdev.ecodes.EV_KEY and event.value == 1:
-                    self.event_data["presses"] += 1
+                    with self._lock:
+                        self.event_data["presses"] += 1
                     self.new_event.set()
         except (OSError, IOError):
             self.logger.debug("Keyboard device %s disconnected", device.path)
@@ -152,6 +161,7 @@ class EvdevMouseListener(EventFactory):
         self._threads: List[threading.Thread] = []
         self._devices: list = []
         self._stop_event = threading.Event()
+        self._lock = threading.Lock()
 
     def _reset_data(self) -> None:
         self.event_data: Dict[str, int] = {
@@ -218,6 +228,13 @@ class EvdevMouseListener(EventFactory):
     def is_alive(self) -> bool:
         return any(t.is_alive() for t in self._threads)
 
+    def next_event(self) -> dict:
+        with self._lock:
+            self.new_event.clear()
+            data = dict(self.event_data)
+            self._reset_data()
+        return data
+
     def _read_events(self, device) -> None:
         import evdev
 
@@ -227,21 +244,20 @@ class EvdevMouseListener(EventFactory):
                     break
                 if event.type == evdev.ecodes.EV_KEY and event.value == 1:
                     # Mouse button press
-                    self.event_data["clicks"] += 1
+                    with self._lock:
+                        self.event_data["clicks"] += 1
                     self.new_event.set()
                 elif event.type == evdev.ecodes.EV_REL:
-                    if event.code == evdev.ecodes.REL_X:
-                        self.event_data["deltaX"] += abs(event.value)
-                        self.new_event.set()
-                    elif event.code == evdev.ecodes.REL_Y:
-                        self.event_data["deltaY"] += abs(event.value)
-                        self.new_event.set()
-                    elif event.code == evdev.ecodes.REL_WHEEL:
-                        self.event_data["scrollY"] += abs(event.value)
-                        self.new_event.set()
-                    elif event.code == evdev.ecodes.REL_HWHEEL:
-                        self.event_data["scrollX"] += abs(event.value)
-                        self.new_event.set()
+                    with self._lock:
+                        if event.code == evdev.ecodes.REL_X:
+                            self.event_data["deltaX"] += abs(event.value)
+                        elif event.code == evdev.ecodes.REL_Y:
+                            self.event_data["deltaY"] += abs(event.value)
+                        elif event.code == evdev.ecodes.REL_WHEEL:
+                            self.event_data["scrollY"] += abs(event.value)
+                        elif event.code == evdev.ecodes.REL_HWHEEL:
+                            self.event_data["scrollX"] += abs(event.value)
+                    self.new_event.set()
         except (OSError, IOError):
             self.logger.debug("Mouse device %s disconnected", device.path)
         finally:
