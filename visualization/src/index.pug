@@ -4,6 +4,7 @@ html
     style
       | th { text-align: left; }
       | body { font-family: sans-serif; }
+      | #chart-container { position: relative; height: 300px; margin-top: 1em; }
   body
     p#status
 
@@ -20,5 +21,8 @@ html
       tr
         td Clicks
         td#clicks
+
+    #chart-container
+      canvas#chart
 
     script(src="bundle.js")

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/ActivityWatch/aw-watcher-input#readme",
   "dependencies": {
-    "aw-client": "^0.3.0"
+    "aw-client": "^0.3.0",
+    "chart.js": "^4.5.1"
   }
 }
