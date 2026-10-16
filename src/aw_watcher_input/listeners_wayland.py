@@ -36,17 +36,13 @@ def _is_keyboard(device) -> bool:
 
 
 def _is_mouse(device) -> bool:
-    """Return True if *device* looks like a pointing device.
+    """Return True if *device* exposes relative pointing axes.
 
-    Excludes hybrid keyboard+pointer devices (e.g. trackpoints on laptop
-    keyboards) so the same physical device is not opened by both listeners,
-    which would cause keyboard presses to be counted as mouse clicks.
+    Hybrid keyboard+pointer devices can be read by both listeners: the mouse
+    reader filters button codes so keyboard presses are not counted as clicks.
     """
     import evdev
 
-    # Don't double-claim keyboard devices (trackpoints, keyboard+touchpad combos).
-    if _is_keyboard(device):
-        return False
     caps = device.capabilities()
     if evdev.ecodes.EV_REL not in caps:
         return False
@@ -242,8 +238,12 @@ class EvdevMouseListener(EventFactory):
             for event in device.read_loop():
                 if self._stop_event.is_set():
                     break
-                if event.type == evdev.ecodes.EV_KEY and event.value == 1:
-                    # Mouse button press
+                if (
+                    event.type == evdev.ecodes.EV_KEY
+                    and event.value == 1
+                    and evdev.ecodes.BTN_MOUSE <= event.code < evdev.ecodes.BTN_JOYSTICK
+                ):
+                    # Only mouse buttons, not keyboard keys on hybrid devices.
                     with self._lock:
                         self.event_data["clicks"] += 1
                     self.new_event.set()
