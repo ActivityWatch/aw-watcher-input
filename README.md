@@ -57,6 +57,8 @@ Once the server is restarted, you can open the Activity view in the web UI, clic
 
 It should now work. Click save and you're done!
 
+The custom visualization supports both light and dark mode, and will follow the ActivityWatch Theme setting (including "Auto (System)").
+
 # Notes
 
 This was massively inspired by ulogme by @karpathy, here's a screenshot of how it looks:

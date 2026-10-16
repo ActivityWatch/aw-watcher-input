@@ -2,8 +2,19 @@ html
   head
     title aw-watcher-input visualization
     style
+      | :root {
+      |   --bg: #ffffff;
+      |   --text: #000000;
+      |   --status: #000000;
+      | }
+      | html[data-theme="dark"] {
+      |   --bg: #1a1d24;
+      |   --text: #e4e9f2;
+      |   --status: #a5b4cc;
+      | }
       | th { text-align: left; }
-      | body { font-family: sans-serif; }
+      | body { font-family: sans-serif; background: var(--bg); color: var(--text); }
+      | #status { color: var(--status); }
   body
     p#status
 
