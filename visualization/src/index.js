@@ -1,4 +1,8 @@
 const aw_client = require("aw-client");
+// Browserify doesn't understand the "exports" field in chart.js's package.json,
+// so require the UMD build directly.
+const Chart = require("chart.js/dist/chart.umd.js");
+const { binEvents } = require("./bins");
 
 const url = new URL(window.location.href); // www.test.com/?filename=test
 
@@ -26,6 +30,29 @@ const aw = new aw_client.AWClient("aw-watcher-input", {
   baseURL: url.origin,
 });
 
+function renderChart(events) {
+  const { labels, presses, clicks } = binEvents(events, start, end);
+  new Chart(document.getElementById("chart"), {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        { label: "Key presses", data: presses, backgroundColor: "#4e79a7" },
+        { label: "Mouse clicks", data: clicks, backgroundColor: "#f28e2b" },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      interaction: { mode: "index", intersect: false },
+      scales: {
+        y: { beginAtZero: true, ticks: { precision: 0 } },
+      },
+    },
+  });
+}
+
 function load() {
   const statusEl = document.getElementById("status");
   const pressesEl = document.getElementById("presses");
@@ -43,10 +70,11 @@ function load() {
     })
     .then((events) => {
       console.debug(events);
-      const presses = events.map((e) => e.data.presses).reduce(add, 0);
-      const clicks = events.map((e) => e.data.clicks).reduce(add, 0);
+      const presses = events.map((e) => e.data.presses || 0).reduce(add, 0);
+      const clicks = events.map((e) => e.data.clicks || 0).reduce(add, 0);
       pressesEl.append(presses);
       clicksEl.append(clicks);
+      renderChart(events);
     })
     .catch((msg) => statusEl.append(msg));
 }
