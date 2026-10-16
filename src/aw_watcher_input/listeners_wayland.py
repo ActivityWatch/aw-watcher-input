@@ -10,7 +10,6 @@ devices — typically via membership in the ``input`` group.
 
 import logging
 import threading
-from collections import defaultdict
 from typing import Dict, List
 
 from aw_watcher_afk.listeners import EventFactory
@@ -37,9 +36,17 @@ def _is_keyboard(device) -> bool:
 
 
 def _is_mouse(device) -> bool:
-    """Return True if *device* looks like a pointing device."""
+    """Return True if *device* looks like a pointing device.
+
+    Excludes hybrid keyboard+pointer devices (e.g. trackpoints on laptop
+    keyboards) so the same physical device is not opened by both listeners,
+    which would cause keyboard presses to be counted as mouse clicks.
+    """
     import evdev
 
+    # Don't double-claim keyboard devices (trackpoints, keyboard+touchpad combos).
+    if _is_keyboard(device):
+        return False
     caps = device.capabilities()
     if evdev.ecodes.EV_REL not in caps:
         return False
@@ -147,10 +154,13 @@ class EvdevMouseListener(EventFactory):
         self._stop_event = threading.Event()
 
     def _reset_data(self) -> None:
-        self.event_data: Dict[str, int] = defaultdict(int)
-        self.event_data.update(
-            {"clicks": 0, "deltaX": 0, "deltaY": 0, "scrollX": 0, "scrollY": 0}
-        )
+        self.event_data: Dict[str, int] = {
+            "clicks": 0,
+            "deltaX": 0,
+            "deltaY": 0,
+            "scrollX": 0,
+            "scrollY": 0,
+        }
 
     def start(self) -> None:
         try:
