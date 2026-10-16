@@ -11,7 +11,7 @@ devices — typically via membership in the ``input`` group.
 import logging
 import threading
 from collections import defaultdict
-from typing import List
+from typing import Dict, List
 
 from aw_watcher_afk.listeners import EventFactory
 
@@ -147,7 +147,7 @@ class EvdevMouseListener(EventFactory):
         self._stop_event = threading.Event()
 
     def _reset_data(self) -> None:
-        self.event_data = defaultdict(int)
+        self.event_data: Dict[str, int] = defaultdict(int)
         self.event_data.update(
             {"clicks": 0, "deltaX": 0, "deltaY": 0, "scrollX": 0, "scrollY": 0}
         )
