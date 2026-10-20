@@ -111,6 +111,7 @@ class EvdevKeyboardListener(EventFactory):
             try:
                 device.close()
             except (OSError, IOError):
+                # Device already closed or yanked during shutdown.
                 pass
         self._devices.clear()
         for t in self._threads:
@@ -145,6 +146,7 @@ class EvdevKeyboardListener(EventFactory):
             try:
                 device.close()
             except (OSError, IOError):
+                # Device already closed or yanked during shutdown.
                 pass
 
 
@@ -215,6 +217,7 @@ class EvdevMouseListener(EventFactory):
             try:
                 device.close()
             except (OSError, IOError):
+                # Device already closed or yanked during shutdown.
                 pass
         self._devices.clear()
         for t in self._threads:
@@ -264,4 +267,5 @@ class EvdevMouseListener(EventFactory):
             try:
                 device.close()
             except (OSError, IOError):
+                # Device already closed or yanked during shutdown.
                 pass
