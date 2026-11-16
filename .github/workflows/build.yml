@@ -64,8 +64,17 @@ jobs:
       shell: bash
       run: |
           dist/aw-watcher-input/aw-watcher-input --help
+    - name: Archive package
+      # upload-artifact flattens symlinks and drops exec bits. On macOS the
+      # bundle's Python.framework (Versions/Current, top-level Python) is
+      # built from symlinks; uploaded raw it arrives as four copies of the
+      # Python library and an invalid framework layout. A tarball keeps the
+      # layout intact (same fix as ActivityWatch/aw-watcher-window#177 and
+      # ActivityWatch/aw-qt#151).
+      shell: bash
+      run: tar -czf dist/aw-watcher-input.tar.gz -C dist aw-watcher-input
     - name: Upload package
       uses: actions/upload-artifact@v4
       with:
         name: aw-watcher-input-${{ runner.os }}-py${{ matrix.python_version }}
-        path: dist/aw-watcher-input
+        path: dist/aw-watcher-input.tar.gz
