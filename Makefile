@@ -4,6 +4,7 @@ build:
 	poetry install
 
 test:
+	poetry run python -m unittest discover -s tests -v
 	poetry run aw-watcher-input --help  # Ensures that it at least starts
 	make typecheck
 
