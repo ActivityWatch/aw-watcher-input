@@ -45,10 +45,13 @@ class TestHeartbeatMerge(unittest.TestCase):
         self.assertEqual(merged[0].duration, 4 * WINDOW)
 
     def test_input_windows_do_not_merge_across_idle_windows(self):
-        events = build_windows([2, 2, 0, 0])
+        # Input, an idle gap, then input again: the resumed window must not be
+        # folded into either the earlier input or the merged idle event.
+        events = build_windows([2, 2, 0, 0, 2])
         merged = heartbeat_reduce(events, TIMEOUT)
 
-        self.assertEqual(sum(e.data["presses"] for e in merged), 4)
+        self.assertEqual(sum(e.data["presses"] for e in merged), 6)
+        self.assertEqual(len([e for e in merged if e.data["presses"]]), 3)
 
     def test_idle_window_data_is_unchanged(self):
         event, pulsetime = build_event(
