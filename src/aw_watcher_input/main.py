@@ -1,4 +1,5 @@
 import logging
+import math
 from datetime import datetime, timezone
 from time import sleep
 from typing import Optional
@@ -7,6 +8,8 @@ import aw_client
 import click
 from aw_core import Event
 from aw_watcher_afk.listeners import KeyboardListener, MouseListener
+
+from aw_watcher_input.config import load_config
 
 logger = logging.getLogger(__name__)
 
@@ -17,8 +20,21 @@ logger = logging.getLogger(__name__)
     "--port", default=None, type=int, help="Port of the aw-server to connect to."
 )
 @click.option("--testing", is_flag=True)
-def main(testing: bool, host: Optional[str], port: Optional[int]):
+@click.option(
+    "--poll-time",
+    default=None,
+    type=click.FloatRange(min=0, min_open=True),
+    help="Seconds between events. Defaults to poll_time in the config file (5).",
+)
+def main(
+    testing: bool, host: Optional[str], port: Optional[int], poll_time: Optional[float]
+):
     logging.basicConfig(level=logging.INFO)
+    if poll_time is None:
+        poll_time = float(load_config(testing)["poll_time"])
+    # FloatRange lets nan and inf through, and the config value is unchecked
+    if not math.isfinite(poll_time) or poll_time <= 0:
+        raise click.BadParameter("poll_time must be a finite number greater than 0")
     logger.info("Starting watcher...")
     client = aw_client.ActivityWatchClient(
         "aw-watcher-input", testing=testing, host=host, port=port
@@ -30,7 +46,6 @@ def main(testing: bool, host: Optional[str], port: Optional[int]):
     eventtype = "os.hid.input"
     client.create_bucket(bucket_name, eventtype, queued=True)
     client.connect()
-    poll_time = 5
 
     keyboard = KeyboardListener()
     keyboard.start()
