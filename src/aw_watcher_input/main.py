@@ -1,4 +1,5 @@
 import logging
+import math
 from datetime import datetime, timezone
 from time import sleep
 from typing import Optional
@@ -31,10 +32,9 @@ def main(
     logging.basicConfig(level=logging.INFO)
     if poll_time is None:
         poll_time = float(load_config(testing)["poll_time"])
-        if poll_time <= 0:
-            raise click.BadParameter(
-                "poll_time in the config file must be greater than 0"
-            )
+    # FloatRange lets nan and inf through, and the config value is unchecked
+    if not math.isfinite(poll_time) or poll_time <= 0:
+        raise click.BadParameter("poll_time must be a finite number greater than 0")
     logger.info("Starting watcher...")
     client = aw_client.ActivityWatchClient(
         "aw-watcher-input", testing=testing, host=host, port=port
