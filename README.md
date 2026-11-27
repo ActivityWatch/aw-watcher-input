@@ -17,6 +17,8 @@ Make sure you have Python 3.7+ and `poetry` installed, then install with `poetry
 
 Run `poetry run aw-watcher-input --help` for usage instructions.
 
+The watcher sends one event every `poll_time` seconds (default 5). Change it with `--poll-time`, or set `poll_time` in `aw-watcher-input.toml` in the ActivityWatch config directory (e.g. `~/.config/activitywatch/aw-watcher-input/` on Linux), which is useful when aw-qt starts the watcher without arguments. A commented-out default config is written there on first run.
+
 We might eventually create binary builds (like the ones bundled with ActivityWatch for aw-watcher-afk and aw-watcher-window) to make it easier to get this watcher up and running, but it's still a bit too early for that.
 
 
